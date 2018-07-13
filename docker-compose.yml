@@ -1,0 +1,59 @@
+version: '2'
+
+services:
+  consul:
+    image: consul
+    ports:
+      - "8300:8300"
+      - "8400:8400"
+      - "8500:8500"
+    networks:
+      - sky-net
+
+  server-01:
+    build: 
+      context: ./
+      dockerfile: server/Dockerfile
+    depends_on:
+      - consul
+    environment:
+      - CONSUL_ADDRESS=consul
+    networks:
+      - sky-net
+
+  server-02:
+    build: 
+      context: ./
+      dockerfile: server/Dockerfile
+    depends_on:
+      - consul
+    environment:
+      - CONSUL_ADDRESS=consul
+    networks:
+      - sky-net
+
+  server-03:
+    build: 
+      context: ./
+      dockerfile: server/Dockerfile
+    depends_on:
+      - consul
+    environment:
+      - CONSUL_ADDRESS=consul
+    networks:
+      - sky-net
+
+  client-01:
+    build: 
+      context: ./
+      dockerfile: client/Dockerfile
+    depends_on:
+      - consul
+    environment:
+      - CONSUL_ADDRESS=consul
+    networks:
+      - sky-net
+
+networks:
+  sky-net:
+    driver: bridge
