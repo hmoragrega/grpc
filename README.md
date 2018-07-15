@@ -1,7 +1,49 @@
-# grpc
+# Microservices Orchestration Demo
+- Service discovery with either consul or kubernetes services
+- Load balancing between nodes
+- Circuit breaker [TODO]
+- Pub/Sub Events with Kafka [TODO]
 
+## Build
+Build docker images
+```
+make build
+```
 
-## Installation fo Protocol Buffers (Mac OSX)
+## Run
+### Option 1: Docker + Consul
+You can run the demo locally in docker using consul as service discovery (go-micro default registry)
+```
+make up
+```
+To check the output
+```
+make logs
+```
+To stop it type
+```
+make down
+```
+### Option 2: Kubernetes in minikube
+You can use a local kubernetes cluster to deploy the demo
+Install minikube an activate set up the terminal to use the minikube docker
+```
+eval $(minikube docker-env)
+```
+Rebuild the images so they are available inside the minikube docker
+```
+make build
+```
+Then deploy
+```
+make deploy
+```
+To remove all services type:
+```
+make destroy
+```
+
+## Appendix: Installation fo Protocol Buffers (Mac OSX)
 
 ### Install the proto compiler
 
