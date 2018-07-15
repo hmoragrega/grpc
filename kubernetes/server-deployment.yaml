@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: grpc-server
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        io.kompose.service: grpc-server
+    spec:
+      containers:
+        - name: grpc-server
+          image: "hmoragrega/grpc-server:latest"
+          imagePullPolicy: Never
+          ports:
+          - name: grpc-port
+            containerPort: 9090
+          - name: liveness-port
+            containerPort: 9091
+          env:
+          - name: PORT
+            value: "9090"
+          - name: LIVENESS_PORT
+            value: "9091"
+          - name: MICRO_REGISTRY
+            value: kubernetes
+          livenessProbe:
+              httpGet:
+                path: /health
+                port: liveness-port
+              initialDelaySeconds: 5
+              periodSeconds: 3

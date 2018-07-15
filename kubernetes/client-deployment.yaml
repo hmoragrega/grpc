@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: grpc-client
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        io.kompose.service: grpc-client
+    spec:
+      containers:
+        - name: grpc-client
+          image: "hmoragrega/grpc-client:latest"
+          imagePullPolicy: Never
+          env:
+          - name: MICRO_REGISTRY
+            value: kubernetes

@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
 	"os"
-	"time"
 
 	"github.com/hmoragrega/grpc/protobuf"
 	micro "github.com/micro/go-micro"
-	"github.com/micro/go-micro/registry"
+
+	_ "github.com/micro/go-plugins/registry/kubernetes"
 	"golang.org/x/net/context"
 )
 
@@ -22,13 +24,12 @@ func (g *Greeter) Hello(ctx context.Context, req *greeter.HelloRequest, resp *gr
 	return nil
 }
 
+func health(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, "OK")
+}
+
 func main() {
-
-	consulAddress := os.Getenv("CONSUL_ADDRESS")
-	if consulAddress == "" {
-		consulAddress = "localhost"
-	}
-
 	// Create a new service. Optionally include some options here.
 	service := micro.NewService(
 		micro.Name("greeter"),
@@ -36,9 +37,6 @@ func main() {
 		micro.Metadata(map[string]string{
 			"type": "helloworld",
 		}),
-		micro.RegisterTTL(time.Second*10),
-		micro.RegisterInterval(time.Second*5),
-		micro.Registry(registry.NewRegistry(registry.Addrs(consulAddress))),
 	)
 
 	// Init will parse the command line flags.
@@ -46,6 +44,19 @@ func main() {
 
 	// Register handler
 	greeter.RegisterGreeterHandler(service.Server(), new(Greeter))
+
+	go func() {
+		http.HandleFunc("/health", health)
+		livenessPort := os.Getenv("LIVENESS_PORT")
+		if livenessPort == "" {
+			livenessPort = "8080"
+		}
+		address := fmt.Sprintf("0.0.0.0:%s", livenessPort)
+		fmt.Printf("Listening for liveness at %s\n", address)
+		if err := http.ListenAndServe(fmt.Sprintf("0.0.0.0:%s", livenessPort), nil); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	// Run the server
 	if err := service.Run(); err != nil {

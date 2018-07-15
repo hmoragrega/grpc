@@ -11,46 +11,45 @@ services:
       - sky-net
 
   server-01:
-    build: 
-      context: ./
-      dockerfile: server/Dockerfile
+    image: hmoragrega/grpc-server
     depends_on:
       - consul
     environment:
       - CONSUL_ADDRESS=consul
+      - MICRO_REGISTER_TTL=10
+      - MICRO_REGISTER_INTERVAL=5
+      - MICRO_REGISTRY_ADDRESS=consul
     networks:
       - sky-net
 
   server-02:
-    build: 
-      context: ./
-      dockerfile: server/Dockerfile
+    image: hmoragrega/grpc-server
     depends_on:
       - consul
     environment:
-      - CONSUL_ADDRESS=consul
+      - MICRO_REGISTER_TTL=10
+      - MICRO_REGISTER_INTERVAL=5
+      - MICRO_REGISTRY_ADDRESS=consul
     networks:
       - sky-net
 
   server-03:
-    build: 
-      context: ./
-      dockerfile: server/Dockerfile
+    image: hmoragrega/grpc-server
     depends_on:
       - consul
     environment:
-      - CONSUL_ADDRESS=consul
+      - MICRO_REGISTER_TTL=10
+      - MICRO_REGISTER_INTERVAL=5
+      - MICRO_REGISTRY_ADDRESS=consul
     networks:
       - sky-net
 
   client-01:
-    build: 
-      context: ./
-      dockerfile: client/Dockerfile
+    image: hmoragrega/grpc-client
     depends_on:
       - consul
     environment:
-      - CONSUL_ADDRESS=consul
+      - MICRO_REGISTRY_ADDRESS=consul
     networks:
       - sky-net
 
