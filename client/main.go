@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hmoragrega/grpc/protobuf"
+	"github.com/hmoragrega/grpc/protobuf/greeter"
+	grpc "github.com/micro/go-grpc"
 	micro "github.com/micro/go-micro"
 	_ "github.com/micro/go-plugins/registry/kubernetes"
 	"golang.org/x/net/context"
@@ -34,7 +35,7 @@ func hello(t time.Time, greeterService greeter.GreeterService) {
 
 func main() {
 	// Create a new service. Optionally include some options here.
-	service := micro.NewService(
+	service := grpc.NewService(
 		micro.Name("greeter"),
 		micro.Version("latest"),
 		micro.Metadata(map[string]string{

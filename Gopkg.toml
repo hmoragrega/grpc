@@ -36,3 +36,6 @@
 [[constraint]]
   name = "github.com/micro/go-plugins"
   version = "0.11.0"
+[[constraint]]
+  name = "github.com/micro/go-grpc"
+  version = "0.3.0"
