@@ -13,5 +13,8 @@ build-server:
 build-client:
 	@docker build -t hmoragrega/grpc-client:latest -f client/Dockerfile .
 
+build-publisher:
+	@docker build -t hmoragrega/grpc-publisher:latest -f publisher/Dockerfile .
+
 build-proto:
 	@protoc --micro_out=. --go_out=. protobuf/greeter.proto

@@ -14,11 +14,14 @@ services:
     image: hmoragrega/grpc-server
     depends_on:
       - consul
+      - kafka
     environment:
       - CONSUL_ADDRESS=consul
       - MICRO_REGISTER_TTL=10
       - MICRO_REGISTER_INTERVAL=5
       - MICRO_REGISTRY_ADDRESS=consul
+      - MICRO_BROKER=kafka
+      - MICRO_BROKER_ADDRESS=kafka:9092
     networks:
       - sky-net
 
@@ -26,10 +29,13 @@ services:
     image: hmoragrega/grpc-server
     depends_on:
       - consul
+      - kafka
     environment:
       - MICRO_REGISTER_TTL=10
       - MICRO_REGISTER_INTERVAL=5
       - MICRO_REGISTRY_ADDRESS=consul
+      - MICRO_BROKER=kafka
+      - MICRO_BROKER_ADDRESS=kafka:9092
     networks:
       - sky-net
 
@@ -37,10 +43,13 @@ services:
     image: hmoragrega/grpc-server
     depends_on:
       - consul
+      - kafka
     environment:
       - MICRO_REGISTER_TTL=10
       - MICRO_REGISTER_INTERVAL=5
       - MICRO_REGISTRY_ADDRESS=consul
+      - MICRO_BROKER=kafka
+      - MICRO_BROKER_ADDRESS=kafka:9092
     networks:
       - sky-net
 
@@ -48,8 +57,31 @@ services:
     image: hmoragrega/grpc-client
     depends_on:
       - consul
+      - kafka
     environment:
       - MICRO_REGISTRY_ADDRESS=consul
+    networks:
+      - sky-net
+
+  publisher-01:
+    image: hmoragrega/grpc-publisher
+    depends_on:
+      - consul
+      - kafka
+    environment:
+      - MICRO_REGISTRY_ADDRESS=consul
+      - MICRO_BROKER=kafka
+      - MICRO_BROKER_ADDRESS=kafka:9092
+    networks:
+      - sky-net
+
+  kafka:
+    image: spotify/kafka
+    hostname: kafka
+    environment:
+      - ADVERTISED_HOST=kafka
+      - ADVERTISED_PORT=9092
+      - TOPICS=events
     networks:
       - sky-net
 

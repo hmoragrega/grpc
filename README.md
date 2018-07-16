@@ -1,8 +1,8 @@
 # Microservices Orchestration Demo
 - Service discovery with either consul or kubernetes services
 - Load balancing between nodes
+- Pub/Sub Events with Kafka
 - Circuit breaker [TODO]
-- Pub/Sub Events with Kafka [TODO]
 
 ## Build
 Build docker images
@@ -34,13 +34,18 @@ Rebuild the images so they are available inside the minikube docker
 ```
 make build
 ```
-Then deploy
+Deploy Kafka, it will take some seconds
+```
+make deploy-kafka
+```
+Once kafka is ready then deploy the demo
 ```
 make deploy
 ```
 To remove all services type:
 ```
 make destroy
+make destroy-kafka
 ```
 
 ## Appendix: Installation fo Protocol Buffers (Mac OSX)

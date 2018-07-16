@@ -24,6 +24,10 @@ spec:
           env:
           - name: MICRO_REGISTRY
             value: kubernetes
+          - name: MICRO_BROKER
+            value: kafka
+          - name: MICRO_BROKER_ADDRESS
+            value: broker:9092
         - name: health
           command: [
 		        "/health",

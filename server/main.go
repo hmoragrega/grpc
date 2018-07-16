@@ -9,6 +9,7 @@ import (
 	grpc "github.com/micro/go-grpc"
 	micro "github.com/micro/go-micro"
 
+	_ "github.com/micro/go-plugins/broker/kafka"
 	_ "github.com/micro/go-plugins/registry/kubernetes"
 	_ "github.com/micro/go-plugins/selector/static"
 	"golang.org/x/net/context"
@@ -23,6 +24,12 @@ func (g *Greeter) Hello(ctx context.Context, req *greeter.HelloRequest, resp *gr
 	resp.Greeting = fmt.Sprintf("Hello %s from %s", req.Name, host)
 	fmt.Println("Responing with " + resp.Greeting)
 
+	return nil
+}
+
+// ProcessEvent consumes the events in the queue
+func ProcessEvent(ctx context.Context, event *greeter.HelloRequest) error {
+	fmt.Printf("Got event with name %s\n", event.Name)
 	return nil
 }
 
@@ -41,6 +48,9 @@ func main() {
 
 	// Register greeter handler
 	greeter.RegisterGreeterHandler(service.Server(), new(Greeter))
+
+	// Register the subscriber
+	micro.RegisterSubscriber("events", service.Server(), ProcessEvent)
 
 	// Run the server
 	if err := service.Run(); err != nil {

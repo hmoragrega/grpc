@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: grpc-publisher
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        io.kompose.service: grpc-publisher
+    spec:
+      containers:
+        - name: grpc-publisher
+          image: "hmoragrega/grpc-publisher:latest"
+          command: [
+            "publisher",
+            "--selector=static",
+          ]
+          imagePullPolicy: Never
+          env:
+          - name: MICRO_REGISTRY
+            value: kubernetes
+          - name: STATIC_SELECTOR_PORT_NUMBER
+            value: "9090"
+          - name: MICRO_BROKER
+            value: kafka
+          - name: MICRO_BROKER_ADDRESS
+            value: broker:9092

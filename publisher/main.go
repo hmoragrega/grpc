@@ -7,6 +7,7 @@ import (
 	"github.com/hmoragrega/grpc/protobuf/greeter"
 	grpc "github.com/micro/go-grpc"
 	micro "github.com/micro/go-micro"
+	_ "github.com/micro/go-plugins/broker/kafka"
 	_ "github.com/micro/go-plugins/registry/kubernetes"
 	_ "github.com/micro/go-plugins/selector/static"
 	"golang.org/x/net/context"
@@ -15,22 +16,21 @@ import (
 // The Greeter API.
 type Greeter struct{}
 
-func callEvery(d time.Duration, greeter greeter.GreeterService, f func(greeter.GreeterService)) {
+func callEvery(d time.Duration, publisher micro.Publisher, f func(micro.Publisher)) {
 	for range time.Tick(d) {
-		f(greeter)
+		f(publisher)
 	}
 }
 
-func hello(greeterService greeter.GreeterService) {
-	// Call the greeter
-	rsp, err := greeterService.Hello(context.TODO(), &greeter.HelloRequest{
+func hello(publisher micro.Publisher) {
+	err := publisher.Publish(context.TODO(), &greeter.HelloRequest{
 		Name: "Hilari",
 	})
 
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
-		fmt.Printf("%s\n", rsp.Greeting)
+		fmt.Println("Event published")
 	}
 }
 
@@ -49,6 +49,6 @@ func main() {
 	service.Init()
 
 	// Create new greeter client and call hello
-	greeter := greeter.NewGreeterService("greeter", service.Client())
-	callEvery(3*time.Second, greeter, hello)
+	publisher := micro.NewPublisher("events", service.Client())
+	callEvery(3*time.Second, publisher, hello)
 }
