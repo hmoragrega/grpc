@@ -1,19 +1,20 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: grpc-server
+  name: greeter
 spec:
   replicas: 2
   template:
     metadata:
       labels:
-        io.kompose.service: grpc-server
+        io.kompose.service: greeter
     spec:
       containers:
-        - name: grpc-server
+        - name: grpc-greeter
           command: [
 		        "server",
-		        "--server_address=0.0.0.0:9090",
+            "--server_address=0.0.0.0:9090",
+            "--selector=static",
 	        ]
           image: "hmoragrega/grpc-server:latest"
           imagePullPolicy: Never

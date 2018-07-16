@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/hmoragrega/grpc/protobuf/greeter"
 
@@ -9,6 +10,7 @@ import (
 	micro "github.com/micro/go-micro"
 
 	_ "github.com/micro/go-plugins/registry/kubernetes"
+	_ "github.com/micro/go-plugins/selector/static"
 	"golang.org/x/net/context"
 )
 
@@ -17,7 +19,8 @@ type Greeter struct{}
 
 // Hello function for saying hello
 func (g *Greeter) Hello(ctx context.Context, req *greeter.HelloRequest, resp *greeter.HelloResponse) error {
-	resp.Greeting = "Hello " + req.Name
+	host, _ := os.Hostname()
+	resp.Greeting = fmt.Sprintf("Hello %s from %s", req.Name, host)
 	fmt.Println("Responing with " + resp.Greeting)
 
 	return nil

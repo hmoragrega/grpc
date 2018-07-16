@@ -12,7 +12,13 @@ spec:
       containers:
         - name: grpc-client
           image: "hmoragrega/grpc-client:latest"
+          command: [
+            "client",
+            "--selector=static",
+          ]
           imagePullPolicy: Never
           env:
           - name: MICRO_REGISTRY
             value: kubernetes
+          - name: STATIC_SELECTOR_PORT_NUMBER
+            value: "9090"
